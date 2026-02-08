@@ -1,0 +1,35 @@
+name: Notificación ntfy.sh
+
+# El trigger: Se activa cada vez que subes codigo (push) a la rama main
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  notificar:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Descarga el código del repositorio en la máquina virtual de GitHub
+      - name: Checkout de código
+        uses: actions/checkout@v4
+
+      # 2. Configura Node.js (opcional para un script simple, pero buena práctica)
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # 3. Ejecuta el programa "Hola Mundo"
+      - name: Ejecutar Hola Mundo
+        run: node index.js
+
+      # 4. Envía la notificación a ntfy.sh usando curl
+      - name: Enviar alerta a ntfy
+        run: |
+          curl -H "Title: GitHub Actions Alert" \
+               -H "Priority: high" \
+               -H "Tags: rocket,computer" \
+               -d "¡Código subido a main con éxito! El programa Hola Mundo se ejecutó correctamente. 🚀" \
+               ntfy.sh/devops-itla
